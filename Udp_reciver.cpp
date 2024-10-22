@@ -33,9 +33,9 @@ void Udp_reciver::sendData() {
 
     for(int i =0; i<f_list.size(); ++i){
 
-        // if(i==3){
-        //     i=0;
-        // }
+        if(i==3){
+            i=0;
+        }
         socket1= new QUdpSocket(this);
 
 
