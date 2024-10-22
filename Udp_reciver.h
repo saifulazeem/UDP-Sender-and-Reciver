@@ -1,6 +1,7 @@
 #ifndef UDP_RECIVER_H
 #define UDP_RECIVER_H
 
+#include "qeventloop.h"
 #include <QMainWindow>
 #include <QDebug>
 #include <QUdpSocket>
@@ -36,6 +37,7 @@ private:
 
     QVector <double> f_list;
     QVector <double> yy_data;
+     QEventLoop eventLoop;
 
     int allok=-1;
 

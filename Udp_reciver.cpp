@@ -31,11 +31,9 @@ Udp_reciver::~Udp_reciver()
 
 void Udp_reciver::sendData() {
 
-    for(int i =0; i<f_list.size(); ++i){
+    for(int i =0; i<f_list.size(); i++){
 
-        if(i==3){
-            i=0;
-        }
+
         socket1= new QUdpSocket(this);
 
 
@@ -55,8 +53,11 @@ void Udp_reciver::sendData() {
         } else {
             qDebug() << "Datagram sent:" << bytesWritten << "bytes. with data gram"<< datagram;
             socket1->close();
+            eventLoop.exec();
+            if(i==3){
+                i=-1;
+            }
             //QThread::sleep(5);
-
             //readDatagrams();
 
         }
@@ -105,6 +106,7 @@ void Udp_reciver::readDatagrams() {
         qDebug()<< "Recive packet :: " <<yy_data;
         yy_data.clear();
         qDebug() << "=====================================================================END of PACKET=======================================================================";
+        eventLoop.quit();
     }
 }
 
