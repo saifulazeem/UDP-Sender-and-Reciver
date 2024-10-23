@@ -22,6 +22,11 @@ class Udp_reciver : public QMainWindow
 public:
     Udp_reciver(QWidget *parent = nullptr);
     ~Udp_reciver();
+protected:
+    void closeEvent(QCloseEvent *event) override {
+        qDebug() << event ;
+        allok=-1;
+    }
 private slots:
     void readDatagrams();
     void sendData();
@@ -37,7 +42,9 @@ private:
 
     QVector <double> f_list;
     QVector <double> yy_data;
-     QEventLoop eventLoop;
+    QEventLoop eventLoop;
+    quint16 targetPort =6500; // Change to your target port
+
 
     int allok=-1;
 

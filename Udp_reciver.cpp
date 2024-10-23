@@ -9,6 +9,8 @@ Udp_reciver::Udp_reciver(QWidget *parent)
     ui->setupUi(this);
 
     socket2 = new QUdpSocket(this);
+    socket1= new QUdpSocket(this);
+
     //QString hostid="10.42.0.1";
     //socket2->bind(QHostAddress::LocalHost, 4021); // Bind to localhost on port 2500
     socket2->bind(QHostAddress::Any, 9000); // Bind to the specified local host address and port 7
@@ -27,41 +29,38 @@ Udp_reciver::Udp_reciver(QWidget *parent)
 Udp_reciver::~Udp_reciver()
 {
     delete ui;
+    delete socket1;
+    delete socket2;
 }
 
 void Udp_reciver::sendData() {
 
     for(int i =0; i<f_list.size(); i++){
+        if(allok==1){
+            QByteArray datagram;
+            QString fq= QString::number(f_list[i]);
+            datagram.append(fq.toUtf8());  // Convert QString to QByteArray and append it
 
+            // Define the target address and port
+            QHostAddress targetAddress("192.168.18.77"); // Change to your target IP address
 
-        socket1= new QUdpSocket(this);
+            // Send the datagram
+            qint64 bytesWritten = socket1->writeDatagram(datagram, targetAddress, targetPort);
 
+            if (bytesWritten == -1) {
+                qCritical() << "Failed to send datagram:" << socket1->errorString();
+            } else {
+                qDebug() << "Datagram sent:" << bytesWritten << "bytes. with data gram"<< datagram;
+                //socket1->close();
+                eventLoop.exec();
+                if(i==3){
+                    i=-1;
+                }
+                //QThread::sleep(5);
+                //readDatagrams();
 
-        QByteArray datagram;
-        QString fq= QString::number(f_list[i]);
-        datagram.append(fq.toUtf8());  // Convert QString to QByteArray and append it
-
-        // Define the target address and port
-        QHostAddress targetAddress("192.168.18.77"); // Change to your target IP address
-        quint16 targetPort =6500; // Change to your target port
-
-        // Send the datagram
-        qint64 bytesWritten = socket1->writeDatagram(datagram, targetAddress, targetPort);
-
-        if (bytesWritten == -1) {
-            qCritical() << "Failed to send datagram:" << socket1->errorString();
-        } else {
-            qDebug() << "Datagram sent:" << bytesWritten << "bytes. with data gram"<< datagram;
-            socket1->close();
-            eventLoop.exec();
-            if(i==3){
-                i=-1;
             }
-            //QThread::sleep(5);
-            //readDatagrams();
-
         }
-
     }
 }
 
@@ -115,6 +114,7 @@ void Udp_reciver::on_pushButton_clicked()
     //connect(this, &Udp_reciver::recive_data, this, &Udp_reciver::readDatagrams);
     //connect(this, &Udp_reciver::sendnewdata, this, &Udp_reciver::sendData);
     //emit this->sendnewdata();
+    allok=1;
     sendData();
 
 
